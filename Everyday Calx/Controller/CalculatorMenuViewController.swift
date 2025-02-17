@@ -29,7 +29,7 @@ class CalculatorMenuViewController: UITableViewController {
     func setupNav() {
         let appereance = UINavigationBarAppearance()
         appereance.configureWithOpaqueBackground()
-        appereance.backgroundColor = .systemGroupedBackground
+        appereance.backgroundColor = .systemPink
         self.navigationController?.navigationBar.standardAppearance = appereance
         self.navigationController?.navigationBar.scrollEdgeAppearance = appereance
         self.navigationController?.navigationBar.compactAppearance = appereance

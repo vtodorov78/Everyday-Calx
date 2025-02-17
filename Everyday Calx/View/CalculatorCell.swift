@@ -14,7 +14,7 @@ class CalculatorCell: UITableViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 24, weight: .regular)
+        label.font = .italicSystemFont(ofSize: 24)
         return label
     }()
     
@@ -41,13 +41,15 @@ class CalculatorCell: UITableViewCell {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20).isActive = true
         titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        titleLabel.textColor = .systemMint
         
         contentView.addSubview(iconImageView)
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
         iconImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -28).isActive = true
         iconImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        iconImageView.heightAnchor.constraint(equalToConstant: 34).isActive = true
-        iconImageView.widthAnchor.constraint(equalToConstant: 34).isActive = true
+        iconImageView.heightAnchor.constraint(equalToConstant: 38).isActive = true
+        iconImageView.widthAnchor.constraint(equalToConstant: 38).isActive = true
+        iconImageView.tintColor = .systemPink
     }
     
     func configure(with label: String, and image: UIImage) {

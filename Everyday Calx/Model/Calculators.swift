@@ -35,7 +35,7 @@ enum Calculators: Int, CaseIterable {
         case .loanCalc:
             return "dollarsign.bank.building"
         case .paychekCalc:
-            return "dollarsign"
+            return "dollarsign.circle"
         }
     }
 }
