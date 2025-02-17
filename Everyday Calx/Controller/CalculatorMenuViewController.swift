@@ -13,6 +13,8 @@ class CalculatorMenuViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.view.backgroundColor = .systemBackground
+        
         setupTableView()
         setupNav()
     }
@@ -21,7 +23,7 @@ class CalculatorMenuViewController: UITableViewController {
     func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(CalculatorCell.self, forCellReuseIdentifier: CalculatorCell.indentifier)
     }
     
     func setupNav() {
@@ -31,9 +33,8 @@ class CalculatorMenuViewController: UITableViewController {
         self.navigationController?.navigationBar.standardAppearance = appereance
         self.navigationController?.navigationBar.scrollEdgeAppearance = appereance
         self.navigationController?.navigationBar.compactAppearance = appereance
-        
-        self.view.backgroundColor = .systemBackground
     }
+
 }
 
 // MARK: - TableView
@@ -42,18 +43,25 @@ extension CalculatorMenuViewController {
         return "CALCULATOR MENU"
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 125
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return Calculators.allCases.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CalculatorCell.indentifier, for: indexPath) as? CalculatorCell else { return UITableViewCell() }
         let calculators = Calculators(rawValue: indexPath.row)
-        cell.textLabel?.text = calculators?.title
+        
+        cell.configure(with: calculators?.title ?? "", and: UIImage(systemName: "questionmark") ?? UIImage())
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
         let calculators = Calculators(rawValue: indexPath.row)
         
         switch calculators {
