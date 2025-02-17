@@ -55,7 +55,7 @@ extension CalculatorMenuViewController {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CalculatorCell.indentifier, for: indexPath) as? CalculatorCell else { return UITableViewCell() }
         let calculators = Calculators(rawValue: indexPath.row)
         
-        cell.configure(with: calculators?.title ?? "", and: UIImage(systemName: "questionmark") ?? UIImage())
+        cell.configure(with: calculators?.title ?? "", and: UIImage(systemName: calculators?.image ?? "") ?? UIImage())
         return cell
     }
     

@@ -25,4 +25,17 @@ enum Calculators: Int, CaseIterable {
             return "Paycheck"
         }
     }
+    
+    var image: String {
+        switch self {
+        case .discountCalc:
+            return "percent"
+        case .tipCalc:
+            return "checkmark.seal.text.page"
+        case .loanCalc:
+            return "dollarsign.bank.building"
+        case .paychekCalc:
+            return "dollarsign"
+        }
+    }
 }

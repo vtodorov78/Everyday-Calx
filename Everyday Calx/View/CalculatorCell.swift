@@ -46,6 +46,8 @@ class CalculatorCell: UITableViewCell {
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
         iconImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -28).isActive = true
         iconImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        iconImageView.heightAnchor.constraint(equalToConstant: 34).isActive = true
+        iconImageView.widthAnchor.constraint(equalToConstant: 34).isActive = true
     }
     
     func configure(with label: String, and image: UIImage) {
