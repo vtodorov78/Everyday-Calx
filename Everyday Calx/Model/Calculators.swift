@@ -31,7 +31,7 @@ enum Calculators: Int, CaseIterable {
         case .discountCalc:
             return "percent"
         case .tipCalc:
-            return "checkmark.seal.text.page"
+            return "fork.knife.circle"
         case .loanCalc:
             return "dollarsign.bank.building"
         case .paychekCalc:

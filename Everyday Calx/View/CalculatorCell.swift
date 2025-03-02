@@ -50,6 +50,7 @@ class CalculatorCell: UITableViewCell {
         iconImageView.heightAnchor.constraint(equalToConstant: 38).isActive = true
         iconImageView.widthAnchor.constraint(equalToConstant: 38).isActive = true
         iconImageView.tintColor = .systemPink
+        
     }
     
     func configure(with label: String, and image: UIImage) {

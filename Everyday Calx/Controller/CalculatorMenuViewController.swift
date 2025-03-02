@@ -24,15 +24,18 @@ class CalculatorMenuViewController: UITableViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CalculatorCell.self, forCellReuseIdentifier: CalculatorCell.indentifier)
+        tableView.separatorColor = .systemPink
     }
     
     func setupNav() {
         let appereance = UINavigationBarAppearance()
         appereance.configureWithOpaqueBackground()
         appereance.backgroundColor = .systemPink
+        appereance.titleTextAttributes = [.foregroundColor: UIColor.white]
         self.navigationController?.navigationBar.standardAppearance = appereance
         self.navigationController?.navigationBar.scrollEdgeAppearance = appereance
         self.navigationController?.navigationBar.compactAppearance = appereance
+        self.navigationController?.navigationBar.tintColor = .white
     }
 
 }
