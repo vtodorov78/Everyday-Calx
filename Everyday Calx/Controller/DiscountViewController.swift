@@ -29,7 +29,7 @@ class DiscountViewController: UIViewController {
    private let itemPriceTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "0.00"
-        textField.keyboardType = .numberPad
+        textField.keyboardType = .decimalPad
         textField.backgroundColor = .systemGray5
         textField.textAlignment = .center
         textField.layer.cornerRadius = 8
@@ -55,7 +55,7 @@ class DiscountViewController: UIViewController {
     private let salesTaxTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "0.00"
-        textField.keyboardType = .numberPad
+        textField.keyboardType = .decimalPad
         textField.backgroundColor = .systemGray5
         textField.textAlignment = .center
         textField.layer.cornerRadius = 8
@@ -96,7 +96,7 @@ class DiscountViewController: UIViewController {
    private let discountTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "0.00"
-        textField.keyboardType = .numberPad
+        textField.keyboardType = .decimalPad
         textField.backgroundColor = .systemGray5
         textField.textAlignment = .center
         textField.layer.cornerRadius = 8
@@ -113,7 +113,7 @@ class DiscountViewController: UIViewController {
     
     private let otherDiscountControl: UISegmentedControl = {
         let control = UISegmentedControl(items: ["$", "%"])
-        control.selectedSegmentIndex = 0
+        control.selectedSegmentIndex = 1
         control.layer.cornerRadius = 8
         control.layer.borderWidth = 1.5
         control.layer.masksToBounds = true
@@ -129,7 +129,7 @@ class DiscountViewController: UIViewController {
    private let otherDiscountTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "0.00"
-        textField.keyboardType = .numberPad
+        textField.keyboardType = .decimalPad
         textField.backgroundColor = .systemGray5
         textField.textAlignment = .center
         textField.layer.cornerRadius = 8
@@ -157,6 +157,7 @@ class DiscountViewController: UIViewController {
         textField.backgroundColor = .systemGray5
         textField.textAlignment = .center
         textField.textColor = .systemGreen
+        textField.font = UIFont.systemFont(ofSize: 29)
         textField.layer.cornerRadius = 8
         textField.isEnabled = false
         return textField
@@ -174,12 +175,12 @@ class DiscountViewController: UIViewController {
         textField.backgroundColor = .systemGray5
         textField.textAlignment = .center
         textField.textColor = .systemGreen
+        textField.font = UIFont.systemFont(ofSize: 29)
         textField.layer.cornerRadius = 8
         textField.isEnabled = false
         return textField
     }()
     
-
     // MARK: -  Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -189,12 +190,24 @@ class DiscountViewController: UIViewController {
     
     // MARK: - Helper Functions
     @objc private func calculate() {
-        youSaveTextField.text = "22.33"
-        finalPriceTextField.text = "435.66"
+        guard let price = Double(itemPriceTextField.text ?? "") else { return }
+        let salesTax = Double(salesTaxTextField.text ?? "")
+        guard let discount = Double(discountTextField.text ?? "") else { return}
+        let additionalDiscount = Double(otherDiscountTextField.text ?? "")
+        
+        let discountModel = DiscountModel(itemPrice: price, salesTax: salesTax, discount: discount, additionalDiscount: additionalDiscount)
+        
+        let calculation = discountModel.calculateDiscountAndFinalPrice(with: discountModel)
+        
+        youSaveTextField.text = "\(calculation.discountAmount ?? "")"
+        finalPriceTextField.text = "\(calculation.finalPrice ?? "")"
+        itemPriceTextField.resignFirstResponder()
+        salesTaxTextField.resignFirstResponder()
+        discountTextField.resignFirstResponder()
+        otherDiscountTextField.resignFirstResponder()
     }
     
-    
-   private func setupUI() {
+    private func setupUI() {
         self.navigationItem.title = "Discount Calculator"
         self.view.backgroundColor = .systemBackground
         
@@ -313,5 +326,4 @@ class DiscountViewController: UIViewController {
         finalPriceTextField.heightAnchor.constraint(equalToConstant: 42).isActive = true
         finalPriceTextField.widthAnchor.constraint(equalToConstant: 180).isActive = true
     }
-    
 }
