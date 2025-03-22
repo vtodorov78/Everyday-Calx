@@ -136,6 +136,14 @@ class DiscountViewController: UIViewController {
         return textField
     }()
     
+    private let otherDiscountHintLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Use this field if you need to caluclate additional discount."
+        label.textColor = .systemGray
+        label.font = UIFont.systemFont(ofSize: 11)
+        return label
+    }()
+    
     private let calculateButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Calculate", for: .normal)
@@ -313,6 +321,11 @@ class DiscountViewController: UIViewController {
         otherDiscountTextField.heightAnchor.constraint(equalToConstant: 36).isActive = true
         otherDiscountTextField.widthAnchor.constraint(equalToConstant: 180).isActive = true
         
+        view.addSubview(otherDiscountHintLabel)
+        otherDiscountHintLabel.translatesAutoresizingMaskIntoConstraints = false
+        otherDiscountHintLabel.topAnchor.constraint(equalTo: otherDiscountTextField.bottomAnchor, constant: 7).isActive = true
+        otherDiscountHintLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
+        
         view.addSubview(otherDiscountControl)
         otherDiscountControl.translatesAutoresizingMaskIntoConstraints = false
         otherDiscountControl.topAnchor.constraint(equalTo: discountTextField.bottomAnchor, constant: 28).isActive = true
@@ -323,7 +336,7 @@ class DiscountViewController: UIViewController {
         
         view.addSubview(calculateButton)
         calculateButton.translatesAutoresizingMaskIntoConstraints = false
-        calculateButton.topAnchor.constraint(equalTo: otherDiscountTextField.bottomAnchor, constant: 66).isActive = true
+        calculateButton.topAnchor.constraint(equalTo: otherDiscountHintLabel.bottomAnchor, constant: 50).isActive = true
         calculateButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         calculateButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
         calculateButton.widthAnchor.constraint(equalToConstant: view.frame.width - 62).isActive = true
@@ -331,7 +344,7 @@ class DiscountViewController: UIViewController {
         
         view.addSubview(youSaveLabel)
         youSaveLabel.translatesAutoresizingMaskIntoConstraints = false
-        youSaveLabel.topAnchor.constraint(equalTo: calculateButton.bottomAnchor, constant: 50).isActive = true
+        youSaveLabel.topAnchor.constraint(equalTo: calculateButton.bottomAnchor, constant: 56).isActive = true
         youSaveLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         view.addSubview(youSaveTextField)
