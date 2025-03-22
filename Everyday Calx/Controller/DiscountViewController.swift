@@ -54,7 +54,7 @@ class DiscountViewController: UIViewController {
     
     private let salesTaxTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "0.00"
+        textField.placeholder = "0%"
         textField.keyboardType = .decimalPad
         textField.backgroundColor = .systemGray5
         textField.textAlignment = .center
@@ -95,7 +95,7 @@ class DiscountViewController: UIViewController {
     
    private let discountTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "0.00"
+        textField.placeholder = "0%"
         textField.keyboardType = .decimalPad
         textField.backgroundColor = .systemGray5
         textField.textAlignment = .center
@@ -128,7 +128,7 @@ class DiscountViewController: UIViewController {
     
    private let otherDiscountTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "0.00"
+        textField.placeholder = "0%"
         textField.keyboardType = .decimalPad
         textField.backgroundColor = .systemGray5
         textField.textAlignment = .center
@@ -189,13 +189,38 @@ class DiscountViewController: UIViewController {
     }
     
     // MARK: - Helper Functions
+    @objc private func handleDiscountControlValueChanged(sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0:
+            discountTextField.placeholder = "0.00"
+        case 1:
+            discountTextField.placeholder = "0%"
+        default:
+            discountTextField.placeholder = "0%"
+        }
+    }
+    
+    @objc private func handleOtherDiscountControlValueChanged(sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0:
+            otherDiscountTextField.placeholder = "0.00"
+        case 1:
+            otherDiscountTextField.placeholder = "0%"
+        default:
+            otherDiscountTextField.placeholder = "0%"
+        }
+    }
+    
     @objc private func calculate() {
         guard let price = Double(itemPriceTextField.text ?? "") else { return }
         let salesTax = Double(salesTaxTextField.text ?? "")
         guard let discount = Double(discountTextField.text ?? "") else { return}
         let additionalDiscount = Double(otherDiscountTextField.text ?? "")
         
-        let discountModel = DiscountModel(itemPrice: price, salesTax: salesTax, discount: discount, additionalDiscount: additionalDiscount)
+        let isDiscountInPercentage = discountControl.selectedSegmentIndex == 1 ? true : false
+        let isAdditionalDiscountInPercentage = otherDiscountControl.selectedSegmentIndex == 1 ? true : false
+        
+        let discountModel = DiscountModel(itemPrice: price, salesTax: salesTax, discount: discount, additionalDiscount: additionalDiscount, isDiscountInPercentage: isDiscountInPercentage, isAdditionalDiscountInPercentage: isAdditionalDiscountInPercentage)
         
         let calculation = discountModel.calculateDiscountAndFinalPrice(with: discountModel)
         
@@ -273,6 +298,7 @@ class DiscountViewController: UIViewController {
         discountControl.trailingAnchor.constraint(equalTo: discountTextField.leadingAnchor, constant: -5).isActive = true
         discountControl.heightAnchor.constraint(equalToConstant: 34).isActive = true
         discountControl.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        discountControl.addTarget(self, action: #selector(handleDiscountControlValueChanged), for: .valueChanged)
         
         view.addSubview(otherDiscountLabel)
         otherDiscountLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -293,6 +319,7 @@ class DiscountViewController: UIViewController {
         otherDiscountControl.trailingAnchor.constraint(equalTo: otherDiscountTextField.leadingAnchor, constant: -5).isActive = true
         otherDiscountControl.heightAnchor.constraint(equalToConstant: 34).isActive = true
         otherDiscountControl.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        otherDiscountControl.addTarget(self, action: #selector(handleOtherDiscountControlValueChanged), for: .valueChanged)
         
         view.addSubview(calculateButton)
         calculateButton.translatesAutoresizingMaskIntoConstraints = false

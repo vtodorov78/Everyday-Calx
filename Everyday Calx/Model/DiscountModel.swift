@@ -12,13 +12,15 @@ struct DiscountModel {
     let salesTax: Double?
     let discount: Double
     let additionalDiscount: Double?
+    var isDiscountInPercentage: Bool
+    var isAdditionalDiscountInPercentage: Bool
     
     func calculateDiscountAndFinalPrice(with model: DiscountModel) -> (discountAmount: String?, finalPrice: String?) {
         // Apply first discount
-        let priceAfterFirstDiscount = itemPrice * (1 - discount / 100)
+        let priceAfterFirstDiscount = isDiscountInPercentage ? itemPrice * (1 - discount / 100) : itemPrice - discount
         
         // Apply additional discount
-        let priceAfterAdditionalDiscount = priceAfterFirstDiscount * (1 - (additionalDiscount ?? 0) / 100)
+        let priceAfterAdditionalDiscount = isAdditionalDiscountInPercentage ? priceAfterFirstDiscount * (1 - (additionalDiscount ?? 0) / 100) : priceAfterFirstDiscount - (additionalDiscount ?? 0)
         
         // Calculate total discount amount
         let discountAmount = itemPrice - priceAfterAdditionalDiscount
