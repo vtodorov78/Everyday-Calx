@@ -153,24 +153,6 @@ class DiscountViewController: UIViewController {
         return button
     }()
     
-    private let youSaveLabel: UILabel = {
-        let label = UILabel()
-        label.text = "You Save"
-        label.font = UIFont.boldSystemFont(ofSize: 28)
-        return label
-    }()
-    
-    private let youSaveTextField: UITextField = {
-        let textField = UITextField()
-        textField.backgroundColor = .systemGray5
-        textField.textAlignment = .center
-        textField.textColor = .systemGreen
-        textField.font = UIFont.systemFont(ofSize: 29)
-        textField.layer.cornerRadius = 8
-        textField.isEnabled = false
-        return textField
-    }()
-    
     private let finalPriceLabel: UILabel = {
         let label = UILabel()
         label.text = "Final Price"
@@ -183,7 +165,25 @@ class DiscountViewController: UIViewController {
         textField.backgroundColor = .systemGray5
         textField.textAlignment = .center
         textField.textColor = .systemGreen
-        textField.font = UIFont.systemFont(ofSize: 29)
+        textField.font = UIFont.boldSystemFont(ofSize: 32)
+        textField.layer.cornerRadius = 8
+        textField.isEnabled = false
+        return textField
+    }()
+    
+    private let youSaveLabel: UILabel = {
+        let label = UILabel()
+        label.text = "You Save"
+        label.font = UIFont.boldSystemFont(ofSize: 28)
+        return label
+    }()
+    
+    private let youSaveTextField: UITextField = {
+        let textField = UITextField()
+        textField.backgroundColor = .systemGray5
+        textField.textAlignment = .center
+        textField.textColor = .systemGreen
+        textField.font = UIFont.boldSystemFont(ofSize: 32)
         textField.layer.cornerRadius = 8
         textField.isEnabled = false
         return textField
@@ -220,15 +220,33 @@ class DiscountViewController: UIViewController {
     }
     
     @objc private func calculate() {
-        guard let price = Double(itemPriceTextField.text ?? "") else { return }
-        let salesTax = Double(salesTaxTextField.text ?? "")
-        guard let discount = Double(discountTextField.text ?? "") else { return}
-        let additionalDiscount = Double(otherDiscountTextField.text ?? "")
+        finalPriceTextField.text = ""
+        youSaveTextField.text = ""
         
+        guard let price = itemPriceTextField.text, itemPriceTextField.text?.count != 0 else {
+            AlertManager.showPriceFieldIsEmpty(on: self)
+            return
+        }
+        
+        guard let discount = discountTextField.text, discountTextField.text?.count != 0 else {
+            AlertManager.showDisountFieldIsEmpty(on: self)
+            return
+        }
+        
+        guard let itemPrice = Double(price.replacingOccurrences(of: ",", with: ".")) else {
+            return
+        }
+        
+        guard let itemDiscount = Double(discount.replacingOccurrences(of: ",", with: ".")) else {
+            return
+        }
+        
+        let salesTax = Double(salesTaxTextField.text?.replacingOccurrences(of: ",", with: ".") ?? "")
+        let additionalDiscount = Double(otherDiscountTextField.text?.replacingOccurrences(of: ",", with: ".") ?? "")
         let isDiscountInPercentage = discountControl.selectedSegmentIndex == 1 ? true : false
         let isAdditionalDiscountInPercentage = otherDiscountControl.selectedSegmentIndex == 1 ? true : false
         
-        let discountModel = DiscountModel(itemPrice: price, salesTax: salesTax, discount: discount, additionalDiscount: additionalDiscount, isDiscountInPercentage: isDiscountInPercentage, isAdditionalDiscountInPercentage: isAdditionalDiscountInPercentage)
+        let discountModel = DiscountModel(itemPrice: itemPrice, salesTax: salesTax, discount: itemDiscount, additionalDiscount: additionalDiscount, isDiscountInPercentage: isDiscountInPercentage, isAdditionalDiscountInPercentage: isAdditionalDiscountInPercentage)
         
         let calculation = discountModel.calculateDiscountAndFinalPrice(with: discountModel)
         
@@ -256,6 +274,7 @@ class DiscountViewController: UIViewController {
         itemPriceTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         itemPriceTextField.heightAnchor.constraint(equalToConstant: 36).isActive = true
         itemPriceTextField.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        itemPriceTextField.delegate = self
         
         view.addSubview(itemPriceSignLabel)
         itemPriceSignLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -275,6 +294,7 @@ class DiscountViewController: UIViewController {
         salesTaxTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         salesTaxTextField.heightAnchor.constraint(equalToConstant: 36).isActive = true
         salesTaxTextField.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        salesTaxTextField.delegate = self
         
         view.addSubview(salesTaxHintLabel)
         salesTaxHintLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -299,6 +319,7 @@ class DiscountViewController: UIViewController {
         discountTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         discountTextField.heightAnchor.constraint(equalToConstant: 36).isActive = true
         discountTextField.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        discountTextField.delegate = self
         
         view.addSubview(discountControl)
         discountControl.translatesAutoresizingMaskIntoConstraints = false
@@ -320,6 +341,7 @@ class DiscountViewController: UIViewController {
         otherDiscountTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         otherDiscountTextField.heightAnchor.constraint(equalToConstant: 36).isActive = true
         otherDiscountTextField.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        otherDiscountTextField.delegate = self
         
         view.addSubview(otherDiscountHintLabel)
         otherDiscountHintLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -342,28 +364,39 @@ class DiscountViewController: UIViewController {
         calculateButton.widthAnchor.constraint(equalToConstant: view.frame.width - 62).isActive = true
         calculateButton.addTarget(self, action: #selector(calculate), for: .touchUpInside)
         
-        view.addSubview(youSaveLabel)
-        youSaveLabel.translatesAutoresizingMaskIntoConstraints = false
-        youSaveLabel.topAnchor.constraint(equalTo: calculateButton.bottomAnchor, constant: 56).isActive = true
-        youSaveLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        
-        view.addSubview(youSaveTextField)
-        youSaveTextField.translatesAutoresizingMaskIntoConstraints = false
-        youSaveTextField.topAnchor.constraint(equalTo: youSaveLabel.bottomAnchor, constant: 15).isActive = true
-        youSaveTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        youSaveTextField.heightAnchor.constraint(equalToConstant: 42).isActive = true
-        youSaveTextField.widthAnchor.constraint(equalToConstant: 180).isActive = true
-        
         view.addSubview(finalPriceLabel)
         finalPriceLabel.translatesAutoresizingMaskIntoConstraints = false
-        finalPriceLabel.topAnchor.constraint(equalTo: youSaveTextField.bottomAnchor, constant: 40).isActive = true
+        finalPriceLabel.topAnchor.constraint(equalTo: calculateButton.bottomAnchor, constant: 48).isActive = true
         finalPriceLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         view.addSubview(finalPriceTextField)
         finalPriceTextField.translatesAutoresizingMaskIntoConstraints = false
         finalPriceTextField.topAnchor.constraint(equalTo: finalPriceLabel.bottomAnchor, constant: 15).isActive = true
         finalPriceTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        finalPriceTextField.heightAnchor.constraint(equalToConstant: 42).isActive = true
+        finalPriceTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         finalPriceTextField.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        
+        view.addSubview(youSaveLabel)
+        youSaveLabel.translatesAutoresizingMaskIntoConstraints = false
+        youSaveLabel.topAnchor.constraint(equalTo: finalPriceTextField.bottomAnchor, constant: 40).isActive = true
+        youSaveLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        view.addSubview(youSaveTextField)
+        youSaveTextField.translatesAutoresizingMaskIntoConstraints = false
+        youSaveTextField.topAnchor.constraint(equalTo: youSaveLabel.bottomAnchor, constant: 15).isActive = true
+        youSaveTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        youSaveTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        youSaveTextField.widthAnchor.constraint(equalToConstant: 180).isActive = true
+    }
+}
+// MARK: - TextField Delegate
+extension DiscountViewController: UITextFieldDelegate {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let allowedCharacters = "0123456789,."
+        let allowedCharacterSet = CharacterSet(charactersIn: allowedCharacters)
+        let typedCharacterSet = CharacterSet(charactersIn: string)
+        
+        return allowedCharacterSet.isSuperset(of: typedCharacterSet)
     }
 }
