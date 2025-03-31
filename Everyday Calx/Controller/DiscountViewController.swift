@@ -223,28 +223,67 @@ class DiscountViewController: UIViewController {
         finalPriceTextField.text = ""
         youSaveTextField.text = ""
         
+        var itemDiscount = 0.00
+        var salesTax: Double?
+        var additionalDiscount: Double?
+        
+        let isDiscountInPercentage = discountControl.selectedSegmentIndex == 1 ? true : false
+        let isAdditionalDiscountInPercentage = otherDiscountControl.selectedSegmentIndex == 1 ? true : false
+        
         guard let price = itemPriceTextField.text, itemPriceTextField.text?.count != 0 else {
             AlertManager.showPriceFieldIsEmpty(on: self)
             return
         }
         
         guard let discount = discountTextField.text, discountTextField.text?.count != 0 else {
-            AlertManager.showDisountFieldIsEmpty(on: self)
+            AlertManager.showDiscountFieldIsEmpty(on: self)
             return
         }
         
         guard let itemPrice = Double(price.replacingOccurrences(of: ",", with: ".")) else {
+            AlertManager.showInvalidPrice(on: self)
             return
         }
         
-        guard let itemDiscount = Double(discount.replacingOccurrences(of: ",", with: ".")) else {
-            return
+        if isDiscountInPercentage {
+            guard let discountValue = Double(discount.replacingOccurrences(of: ",", with: ".")), discountValue <= 100.0 else {
+                AlertManager.showInvalidDiscountPercentage(on: self)
+                return
+            }
+            itemDiscount = discountValue
+        } else {
+            guard let discountValue = Double(discount.replacingOccurrences(of: ",", with: ".")), discountValue < itemPrice else {
+                AlertManager.showInvalidDiscountValue(on: self)
+                return
+            }
+            itemDiscount = discountValue
         }
         
-        let salesTax = Double(salesTaxTextField.text?.replacingOccurrences(of: ",", with: ".") ?? "")
-        let additionalDiscount = Double(otherDiscountTextField.text?.replacingOccurrences(of: ",", with: ".") ?? "")
-        let isDiscountInPercentage = discountControl.selectedSegmentIndex == 1 ? true : false
-        let isAdditionalDiscountInPercentage = otherDiscountControl.selectedSegmentIndex == 1 ? true : false
+        if let tax = salesTaxTextField.text, salesTaxTextField.text?.count != 0 {
+            guard let taxValue = Double(tax.replacingOccurrences(of: ",", with: ".")) else {
+                AlertManager.showInvalidSalesTax(on: self)
+                return
+            }
+            salesTax = taxValue
+        }
+        
+        if let addDiscount = otherDiscountTextField.text, otherDiscountTextField.text?.count != 0 {
+            
+            if isAdditionalDiscountInPercentage {
+                guard let addDiscountValue = Double(addDiscount.replacingOccurrences(of: ",", with: ".")), addDiscountValue + itemDiscount <= 100.0 else {
+                    AlertManager.showInvalidAdditionalDiscountPercentage(on: self)
+                    return
+                }
+                additionalDiscount = addDiscountValue
+            } else {
+                guard let addDiscountValue = Double(addDiscount.replacingOccurrences(of: ",", with: ".")), addDiscountValue + itemDiscount < itemPrice else {
+                    AlertManager.showInvalidAdditionalDiscountValue(on: self)
+                    return
+                }
+                additionalDiscount = addDiscountValue
+            }
+        }
+
         
         let discountModel = DiscountModel(itemPrice: itemPrice, salesTax: salesTax, discount: itemDiscount, additionalDiscount: additionalDiscount, isDiscountInPercentage: isDiscountInPercentage, isAdditionalDiscountInPercentage: isAdditionalDiscountInPercentage)
         

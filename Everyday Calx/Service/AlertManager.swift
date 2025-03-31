@@ -21,10 +21,34 @@ class AlertManager {
     }
     
     public static func showPriceFieldIsEmpty(on vc: UIViewController) {
-        self.showTextAlert(on: vc, with: "Price field is empty", with: "Please enter a valid price.")
+        self.showTextAlert(on: vc, with: "Price required", with: "Please enter an item price. Example: 29.99.")
     }
     
-    public static func showDisountFieldIsEmpty(on vc: UIViewController) {
-        self.showTextAlert(on: vc, with: "Discount field is empty", with: "Please enter a valid disount.")
+    public static func showInvalidPrice(on vc: UIViewController) {
+        self.showTextAlert(on: vc, with: "Invalid Price Format", with: "Price must be a positive number. Example: 45.50.")
+    }
+    
+    public static func showDiscountFieldIsEmpty(on vc: UIViewController) {
+        self.showTextAlert(on: vc, with: "Discount Required", with: "Please enter an item discount. Example: 15.")
+    }
+    
+    public static func showInvalidDiscountPercentage(on vc: UIViewController) {
+        self.showTextAlert(on: vc, with: "Invalid Discount Percentage", with: "Discount must be between 0% and 100%.")
+    }
+    
+    public static func showInvalidDiscountValue(on vc: UIViewController) {
+        self.showTextAlert(on: vc, with: "Invalid Discount Value", with: "Discount must be a positive number and cannot exceed the item's price.")
+    }
+    
+    public static func showInvalidSalesTax(on vc: UIViewController) {
+        self.showTextAlert(on: vc, with: "Invalid Tax Rate", with: "Tax rate must be a positive number. Example: 5.")
+    }
+    
+    public static func showInvalidAdditionalDiscountPercentage(on vc: UIViewController) {
+        self.showTextAlert(on: vc, with: "Invalid Other Discount Percentage", with: "Other Discount must be between 0% and 100%. Discount and Other Discount combined cannot exceed 100%.")
+    }
+    
+    public static func showInvalidAdditionalDiscountValue(on vc: UIViewController) {
+        self.showTextAlert(on: vc, with: "Invalid Other Discount Value", with: "Other Discount must be a positive number. Discount and Other Discount combined cannot exceed the item's price.")
     }
 }
