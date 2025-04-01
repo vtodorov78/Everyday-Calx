@@ -230,61 +230,74 @@ class DiscountViewController: UIViewController {
         let isDiscountInPercentage = discountControl.selectedSegmentIndex == 1 ? true : false
         let isAdditionalDiscountInPercentage = otherDiscountControl.selectedSegmentIndex == 1 ? true : false
         
-        guard let price = itemPriceTextField.text, itemPriceTextField.text?.count != 0 else {
+        // check if price field is empty
+        guard let price = itemPriceTextField.text, !price.isEmpty else {
             AlertManager.showPriceFieldIsEmpty(on: self)
+            itemPriceTextField.becomeFirstResponder()
             return
         }
         
-        guard let discount = discountTextField.text, discountTextField.text?.count != 0 else {
+        // check if discount field is empty
+        guard let discount = discountTextField.text, !discount.isEmpty else {
             AlertManager.showDiscountFieldIsEmpty(on: self)
+            discountTextField.becomeFirstResponder()
             return
         }
         
+        // check if price is valid value and convert it to double
         guard let itemPrice = Double(price.replacingOccurrences(of: ",", with: ".")) else {
             AlertManager.showInvalidPrice(on: self)
+            itemPriceTextField.becomeFirstResponder()
             return
         }
         
+        // check if discount is in percentage and check if its valid value and convert it to double
         if isDiscountInPercentage {
             guard let discountValue = Double(discount.replacingOccurrences(of: ",", with: ".")), discountValue <= 100.0 else {
                 AlertManager.showInvalidDiscountPercentage(on: self)
+                discountTextField.becomeFirstResponder()
                 return
             }
             itemDiscount = discountValue
         } else {
             guard let discountValue = Double(discount.replacingOccurrences(of: ",", with: ".")), discountValue < itemPrice else {
                 AlertManager.showInvalidDiscountValue(on: self)
+                discountTextField.becomeFirstResponder()
                 return
             }
             itemDiscount = discountValue
         }
         
-        if let tax = salesTaxTextField.text, salesTaxTextField.text?.count != 0 {
+        // if there is a tax rate check if its valid and convert it to double
+        if let tax = salesTaxTextField.text, !tax.isEmpty {
             guard let taxValue = Double(tax.replacingOccurrences(of: ",", with: ".")) else {
                 AlertManager.showInvalidSalesTax(on: self)
+                salesTaxTextField.becomeFirstResponder()
                 return
             }
             salesTax = taxValue
         }
         
-        if let addDiscount = otherDiscountTextField.text, otherDiscountTextField.text?.count != 0 {
+        // if there is additional discount check if its valid and convert it to double
+        if let addDiscount = otherDiscountTextField.text, !addDiscount.isEmpty {
             
             if isAdditionalDiscountInPercentage {
                 guard let addDiscountValue = Double(addDiscount.replacingOccurrences(of: ",", with: ".")), addDiscountValue + itemDiscount <= 100.0 else {
                     AlertManager.showInvalidAdditionalDiscountPercentage(on: self)
+                    otherDiscountTextField.becomeFirstResponder()
                     return
                 }
                 additionalDiscount = addDiscountValue
             } else {
                 guard let addDiscountValue = Double(addDiscount.replacingOccurrences(of: ",", with: ".")), addDiscountValue + itemDiscount < itemPrice else {
                     AlertManager.showInvalidAdditionalDiscountValue(on: self)
+                    otherDiscountTextField.becomeFirstResponder()
                     return
                 }
                 additionalDiscount = addDiscountValue
             }
         }
 
-        
         let discountModel = DiscountModel(itemPrice: itemPrice, salesTax: salesTax, discount: itemDiscount, additionalDiscount: additionalDiscount, isDiscountInPercentage: isDiscountInPercentage, isAdditionalDiscountInPercentage: isAdditionalDiscountInPercentage)
         
         let calculation = discountModel.calculateDiscountAndFinalPrice(with: discountModel)
@@ -428,9 +441,11 @@ class DiscountViewController: UIViewController {
         youSaveTextField.widthAnchor.constraint(equalToConstant: 180).isActive = true
     }
 }
+
 // MARK: - TextField Delegate
 extension DiscountViewController: UITextFieldDelegate {
     
+    // allow user to enter only decimal numbers
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let allowedCharacters = "0123456789,."
         let allowedCharacterSet = CharacterSet(charactersIn: allowedCharacters)
