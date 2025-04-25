@@ -45,10 +45,10 @@ class AlertManager {
     }
     
     public static func showInvalidAdditionalDiscountPercentage(on vc: UIViewController) {
-        self.showTextAlert(on: vc, with: "Invalid Other Discount Percentage", with: "Other Discount must be between 0% and 100%. Discount and Other Discount combined cannot exceed 100%.")
+        self.showTextAlert(on: vc, with: "Invalid Other Discount Percentage", with: "Other Discount must be between 0% and 100%.")
     }
     
     public static func showInvalidAdditionalDiscountValue(on vc: UIViewController) {
-        self.showTextAlert(on: vc, with: "Invalid Other Discount Value", with: "Other Discount must be a positive number. Discount and Other Discount combined cannot exceed the item's price.")
+        self.showTextAlert(on: vc, with: "Invalid Other Discount Value", with: "Discount and Other Discount combined cannot exceed the item's price.")
     }
 }

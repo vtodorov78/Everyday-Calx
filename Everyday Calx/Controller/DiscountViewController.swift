@@ -253,12 +253,12 @@ class DiscountViewController: UIViewController {
         
         // check if discount is in percentage and check if its valid value and convert it to double
         if isDiscountInPercentage {
-            guard let discountValue = Double(discount.replacingOccurrences(of: ",", with: ".")), discountValue <= 100.0 else {
+            guard let discountPercentage = Double(discount.replacingOccurrences(of: ",", with: ".")), discountPercentage <= 100.0 else {
                 AlertManager.showInvalidDiscountPercentage(on: self)
                 discountTextField.becomeFirstResponder()
                 return
             }
-            itemDiscount = discountValue
+            itemDiscount = discountPercentage
         } else {
             guard let discountValue = Double(discount.replacingOccurrences(of: ",", with: ".")), discountValue < itemPrice else {
                 AlertManager.showInvalidDiscountValue(on: self)
@@ -266,6 +266,14 @@ class DiscountViewController: UIViewController {
                 return
             }
             itemDiscount = discountValue
+        }
+        
+        // Compute price after initial discount
+        let priceAfterInitialDiscount: Double
+        if isDiscountInPercentage {
+            priceAfterInitialDiscount = itemPrice * (1 - itemDiscount / 100)
+        } else {
+            priceAfterInitialDiscount = itemPrice - itemDiscount
         }
         
         // if there is a tax rate check if its valid and convert it to double
@@ -282,14 +290,14 @@ class DiscountViewController: UIViewController {
         if let addDiscount = otherDiscountTextField.text, !addDiscount.isEmpty {
             
             if isAdditionalDiscountInPercentage {
-                guard let addDiscountValue = Double(addDiscount.replacingOccurrences(of: ",", with: ".")), addDiscountValue + itemDiscount <= 100.0 else {
+                guard let addDiscountPercentage = Double(addDiscount.replacingOccurrences(of: ",", with: ".")), addDiscountPercentage <= 100.0 else {
                     AlertManager.showInvalidAdditionalDiscountPercentage(on: self)
                     otherDiscountTextField.becomeFirstResponder()
                     return
                 }
-                additionalDiscount = addDiscountValue
+                additionalDiscount = addDiscountPercentage
             } else {
-                guard let addDiscountValue = Double(addDiscount.replacingOccurrences(of: ",", with: ".")), addDiscountValue + itemDiscount < itemPrice else {
+                guard let addDiscountValue = Double(addDiscount.replacingOccurrences(of: ",", with: ".")), addDiscountValue <= (priceAfterInitialDiscount + 1e-6) else {
                     AlertManager.showInvalidAdditionalDiscountValue(on: self)
                     otherDiscountTextField.becomeFirstResponder()
                     return
