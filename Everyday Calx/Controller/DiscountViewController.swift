@@ -168,6 +168,7 @@ class DiscountViewController: UIViewController {
         textField.font = UIFont.boldSystemFont(ofSize: 32)
         textField.layer.cornerRadius = 8
         textField.isEnabled = false
+        textField.adjustsFontSizeToFitWidth = true
         return textField
     }()
     
@@ -186,6 +187,7 @@ class DiscountViewController: UIViewController {
         textField.font = UIFont.boldSystemFont(ofSize: 32)
         textField.layer.cornerRadius = 8
         textField.isEnabled = false
+        textField.adjustsFontSizeToFitWidth = true
         return textField
     }()
     
@@ -434,7 +436,7 @@ class DiscountViewController: UIViewController {
         finalPriceTextField.topAnchor.constraint(equalTo: finalPriceLabel.bottomAnchor, constant: 15).isActive = true
         finalPriceTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         finalPriceTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        finalPriceTextField.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        finalPriceTextField.widthAnchor.constraint(equalToConstant: 200).isActive = true
         
         view.addSubview(youSaveLabel)
         youSaveLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -446,7 +448,7 @@ class DiscountViewController: UIViewController {
         youSaveTextField.topAnchor.constraint(equalTo: youSaveLabel.bottomAnchor, constant: 15).isActive = true
         youSaveTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         youSaveTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        youSaveTextField.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        youSaveTextField.widthAnchor.constraint(equalToConstant: 200).isActive = true
     }
 }
 
