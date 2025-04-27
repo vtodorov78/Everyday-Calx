@@ -320,9 +320,25 @@ class DiscountViewController: UIViewController {
         otherDiscountTextField.resignFirstResponder()
     }
     
+    @objc private func clearTextFields() {
+        itemPriceTextField.text = ""
+        salesTaxTextField.text = ""
+        discountTextField.text = ""
+        otherDiscountTextField.text = ""
+        finalPriceTextField.text = ""
+        youSaveTextField.text = ""
+        
+        itemPriceTextField.resignFirstResponder()
+        salesTaxTextField.resignFirstResponder()
+        discountTextField.resignFirstResponder()
+        otherDiscountTextField.resignFirstResponder()
+    }
+    
     private func setupUI() {
         self.navigationItem.title = "Discount Calculator"
         self.view.backgroundColor = .systemBackground
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Clear", style: .plain, target: self, action: #selector(clearTextFields))
         
         view.addSubview(itemPriceLabel)
         itemPriceLabel.translatesAutoresizingMaskIntoConstraints = false
