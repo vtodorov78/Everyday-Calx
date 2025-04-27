@@ -196,9 +196,16 @@ class DiscountViewController: UIViewController {
         super.viewDidLoad()
 
         setupUI()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
     }
     
     // MARK: - Helper Functions
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
     @objc private func handleDiscountControlValueChanged(sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:
@@ -314,10 +321,8 @@ class DiscountViewController: UIViewController {
         
         youSaveTextField.text = "\(calculation.discountAmount ?? "")"
         finalPriceTextField.text = "\(calculation.finalPrice ?? "")"
-        itemPriceTextField.resignFirstResponder()
-        salesTaxTextField.resignFirstResponder()
-        discountTextField.resignFirstResponder()
-        otherDiscountTextField.resignFirstResponder()
+       
+        view.endEditing(true)
     }
     
     @objc private func clearTextFields() {
@@ -328,10 +333,7 @@ class DiscountViewController: UIViewController {
         finalPriceTextField.text = ""
         youSaveTextField.text = ""
         
-        itemPriceTextField.resignFirstResponder()
-        salesTaxTextField.resignFirstResponder()
-        discountTextField.resignFirstResponder()
-        otherDiscountTextField.resignFirstResponder()
+        view.endEditing(true)
     }
     
     private func setupUI() {
